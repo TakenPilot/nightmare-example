@@ -3,6 +3,8 @@ var pages = require('./pages.json');
 var expect = require('chai').expect; // jshint ignore:line
 var _ = require('lodash');
 
+var report = {};
+
 function logAction(action) {
   return function () {
     console.log(action);
@@ -64,11 +66,27 @@ function forEachUrl(urlList, tests) {
         .on("resourceRequested", function (msg) {
           if (msg.url.substr(0, 5) !== 'data:') {
             console.log("resourceRequested:", msg.url);
+            if (!report[msg.url]) {
+              report[msg.url] = {};
+            }
+            report[msg.url].startTime = new Date().getTime();
           }
         })
         .on("resourceReceived", function (msg) {
           if (msg.url.substr(0, 5) !== 'data:') {
             console.log("resourceReceived:", msg.url);
+            if (report[msg.url].startTime) {
+              var resourceReport = report[msg.url],
+                startTime = resourceReport.startTime,
+                myTime = new Date().getTime();
+              resourceReport.accTime = resourceReport.accTime ?
+              resourceReport.accTime + (myTime - startTime) :
+                (myTime - startTime);
+              resourceReport.count = resourceReport.count ? resourceReport.count + 1 : 1;
+              resourceReport.avgTime = resourceReport.accTime / resourceReport.count;
+              delete resourceReport.startTime;
+            }
+
           }
         })
         .on("resourceError", function (msg) {
@@ -123,8 +141,12 @@ function forReviewUrls(items) {
 }
 
 describe('factory.qa schema.org', function() {
-  this.timeout(10000);
+  this.timeout(15000);
   forIndexUrls(pages.index);
   forArticleUrls(pages.article);
   forReviewUrls(pages.review);
+
+  after(function () {
+    console.log(require('util').inspect(_.mapValues(report, function (obj) { return _.pick(obj, ['avgTime']) })));
+  })
 });

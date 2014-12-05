@@ -1,7 +1,7 @@
 {
   "index": [
-    "factory.qa.vulture.com/index.html",
-    "factory.qa.grubstreet.com/index.html"
+    "http://factory.qa.vulture.com/index.html",
+    "http://factory.qa.grubstreet.com/index.html"
   ],
   "article": [
     "http://factory.qa.vulture.com/2014/12/fukunaga-to-shoot-stephen-kings-it-next-summer.html",
