@@ -1,0 +1,13 @@
+{
+  "name": "nightmare-example",
+  "version": "0.0.1",
+  "description": "Test the setup of a nightmare project",
+  "main": "index.js",
+  "author": "Dane Stuckel",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1",
+    "nightmare": "^1.6.5"
+  }
+}
